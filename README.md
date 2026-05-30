@@ -2,17 +2,9 @@
 
 A complete Learning Management System (LMS) built using the MERN Stack. This platform allows educators to create and manage courses while students can enroll, purchase courses, track progress, watch lectures, and rate courses.
 
-## 🚀 Live Demo
-
-### Frontend
-https://edemy-lms-frontend-three.vercel.app
-
-### Backend API
-https://edemy-lms-backend-nine.vercel.app
-
 ---
 
-## 🌐 Live Demo
+## 🌐🚀 Live Demo
 
 🔗 Frontend:
 https://edemy-lms-frontend-three.vercel.app
