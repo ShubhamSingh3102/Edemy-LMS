@@ -1,9 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import uniqid from 'uniqid' // so that we can get uniqueId of each course
 import Quill from 'quill'  // rich text in course description
 import { assets } from '../../assets/assets'
+import { AppContext } from '../../context/AppContext'
+import { toast } from 'react-toastify'
+import axios from 'axios'
 
 const AddCourse = () => {
+
+
+  const { backendUrl, getToken } = useContext(AppContext)
 
   const quillRef = useRef(null)  // Value store karna without re-render // kisi cheez ka direct reference/store
   const editorRef = useRef(null)
@@ -116,7 +122,48 @@ const AddCourse = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    try {
+      e.preventDefault()
+      if (!image) {
+        toast.error('Thumbnail Not Selected')
+      }
+
+      const courseData = {
+        courseTitle,
+        courseDescription: quillRef.current.root.innerHTML,
+        coursePrice: Number(coursePrice),
+        discount: Number(discount),
+        courseContent: chapters,
+      }
+
+      // form data
+      const formData = new FormData()
+      formData.append('courseData', JSON.stringify(courseData))
+      formData.append('image', image)
+
+      // api call
+      const token = await getToken()
+      const { data } = await axios.post(backendUrl + '/api/educator/add-course', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      if (data.success) {
+        toast.success(data.message)
+        setCourseTitle('')
+        setCoursePrice(0)
+        setDiscount(0)
+        setImage(null)
+        setChapters([])
+        // description field
+        quillRef.current.root.innerHTML = ""
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
   // Ye Quill editor ko initialize kar raha h only once...
